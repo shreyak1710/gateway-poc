@@ -1,0 +1,29 @@
+
+server:
+  port: 8081
+
+spring:
+  application:
+    name: auth-service
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: authdb
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+jwt:
+  secret: veryLongAndSecureSecretKeyForAuthServiceSigning123!@#
+  expiration: 3600 # 1 hour in seconds
+  refresh-expiration: 86400 # 24 hours in seconds
+
+logging:
+  level:
+    com.zapcom.authservice: DEBUG
+    org.springframework.security: INFO
