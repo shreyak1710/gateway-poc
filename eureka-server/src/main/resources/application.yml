@@ -5,6 +5,8 @@ server:
 spring:
   application:
     name: eureka-server
+  main:
+    banner-mode: console
 
 eureka:
   client:
@@ -14,3 +16,11 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
   server:
     wait-time-in-ms-when-sync-empty: 0
+    enable-self-preservation: false
+
+logging:
+  level:
+    com.netflix.eureka: DEBUG
+    com.netflix.discovery: DEBUG
+    org.springframework.boot: DEBUG
+    com.zapcom.eurekaserver: DEBUG
