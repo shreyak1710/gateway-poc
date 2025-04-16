@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import com.zapcom.filter.JwtAuthFilter;
 import com.zapcom.filter.RequestLoggingFilter;
 import com.zapcom.filter.ResponseTransformFilter;
+import com.zapcom.utils.Constants;
 
 @Configuration
 public class ApiGatewayConfiguration {
@@ -27,21 +28,21 @@ public class ApiGatewayConfiguration {
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
         return builder.routes()
             // Auth service route
-            .route("auth-service", r -> r.path("/api/auth/**")
+            .route("auth-service", r -> r.path(Constants.AUTH_PATH + "/**")
                 .filters(f -> f
-                    .rewritePath("/api/auth/(?<segment>.*)", "/auth/${segment}")
+                    .rewritePath(Constants.AUTH_PATH + "/(?<segment>.*)", "/auth/${segment}")
                     .filter(requestLoggingFilter)
                     .filter(responseTransformFilter))
-                .uri("lb://AUTH-SERVICE"))
+                .uri("lb://" + Constants.AUTH_SERVICE))
             
             // Customer service route (protected with JWT)
-            .route("customer-service", r -> r.path("/api/customers/**")
+            .route("customer-service", r -> r.path(Constants.CUSTOMER_PATH + "/**")
                 .filters(f -> f
-                    .rewritePath("/api/customers/(?<segment>.*)", "/customers/${segment}")
+                    .rewritePath(Constants.CUSTOMER_PATH + "/(?<segment>.*)", "/customers/${segment}")
                     .filter(jwtAuthFilter)
                     .filter(requestLoggingFilter)
                     .filter(responseTransformFilter))
-                .uri("lb://CUSTOMER-SERVICE"))
+                .uri("lb://" + Constants.CUSTOMER_SERVICE))
             
             .build();
     }
