@@ -6,6 +6,8 @@ import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.zapcom.filter.JwtAuthFilter;
 import com.zapcom.filter.RequestLoggingFilter;
@@ -14,6 +16,7 @@ import com.zapcom.utils.Constants;
 
 @Configuration
 public class ApiGatewayConfiguration {
+    private static final Logger logger = LoggerFactory.getLogger(ApiGatewayConfiguration.class);
 
     @Autowired
     private JwtAuthFilter jwtAuthFilter;
@@ -26,23 +29,31 @@ public class ApiGatewayConfiguration {
 
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
+        logger.info("Configuring API Gateway routes");
+        
         return builder.routes()
             // Auth service route
-            .route("auth-service", r -> r.path(Constants.AUTH_PATH + "/**")
-                .filters(f -> f
-                    .rewritePath(Constants.AUTH_PATH + "/(?<segment>.*)", "/auth/${segment}")
-                    .filter(requestLoggingFilter)
-                    .filter(responseTransformFilter))
-                .uri("lb://" + Constants.AUTH_SERVICE))
+            .route("auth-service", r -> {
+                logger.info("Configuring auth-service route for path: {}", Constants.AUTH_PATH + "/**");
+                return r.path(Constants.AUTH_PATH + "/**")
+                    .filters(f -> f
+                        .rewritePath(Constants.AUTH_PATH + "/(?<segment>.*)", "/auth/${segment}")
+                        .filter(requestLoggingFilter)
+                        .filter(responseTransformFilter))
+                    .uri("lb://AUTH-SERVICE");
+            })
             
             // Customer service route (protected with JWT)
-            .route("customer-service", r -> r.path(Constants.CUSTOMER_PATH + "/**")
-                .filters(f -> f
-                    .rewritePath(Constants.CUSTOMER_PATH + "/(?<segment>.*)", "/customers/${segment}")
-                    .filter(jwtAuthFilter)
-                    .filter(requestLoggingFilter)
-                    .filter(responseTransformFilter))
-                .uri("lb://" + Constants.CUSTOMER_SERVICE))
+            .route("customer-service", r -> {
+                logger.info("Configuring customer-service route for path: {}", Constants.CUSTOMER_PATH + "/**");
+                return r.path(Constants.CUSTOMER_PATH + "/**")
+                    .filters(f -> f
+                        .rewritePath(Constants.CUSTOMER_PATH + "/(?<segment>.*)", "/customers/${segment}")
+                        .filter(jwtAuthFilter)
+                        .filter(requestLoggingFilter)
+                        .filter(responseTransformFilter))
+                    .uri("lb://CUSTOMER-SERVICE");
+            })
             
             .build();
     }
