@@ -29,7 +29,7 @@ public class ApiGatewayConfiguration {
 
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
-        logger.info("Configuring API Gateway routes");
+        logger.info("Configuring API Gateway routes with static service discovery");
         
         return builder.routes()
             // Auth service route
@@ -40,7 +40,7 @@ public class ApiGatewayConfiguration {
                         .rewritePath(Constants.AUTH_PATH + "/(?<segment>.*)", "/auth/${segment}")
                         .filter(requestLoggingFilter)
                         .filter(responseTransformFilter))
-                    .uri("lb://AUTH-SERVICE");
+                    .uri("http://localhost:8081");
             })
             
             // Customer service route (protected with JWT)
@@ -52,7 +52,7 @@ public class ApiGatewayConfiguration {
                         .filter(jwtAuthFilter)
                         .filter(requestLoggingFilter)
                         .filter(responseTransformFilter))
-                    .uri("lb://CUSTOMER-SERVICE");
+                    .uri("http://localhost:8082");
             })
             
             .build();
