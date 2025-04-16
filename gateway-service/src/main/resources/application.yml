@@ -70,7 +70,8 @@ logging:
   level:
     org.springframework.cloud.gateway: DEBUG
     reactor.netty: INFO
+    com.zapcom: DEBUG
 
 jwt:
-  secret: veryLongAndSecureSecretKeyForGatewayServiceSigning123!@#
+  secret: veryLongAndSecureSecretKeyForAuthServiceSigning123!@#
   expiration: 3600 # 1 hour in seconds
