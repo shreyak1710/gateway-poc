@@ -13,12 +13,12 @@ public class RateLimiterConfiguration {
     @Bean
     public KeyResolver ipKeyResolver() {
         return exchange -> Mono.just(
-            exchange.getRequest().getRemoteAddress().getHostName());
+            exchange.getRequest().getRemoteAddress().getAddress().getHostAddress());
     }
     
     @Bean
     public RedisRateLimiter redisRateLimiter() {
-        // Configure requests per second and burst capacity
+        // Configure requests per second (replenishRate) and burst capacity
         return new RedisRateLimiter(10, 20);
     }
 }
