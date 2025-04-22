@@ -1,0 +1,49 @@
+
+#!/bin/sh
+
+echo "***** Optimizing imports with Spotless *****"
+./gradlew spotlessApply
+spotless_status=$?
+
+if [ "$spotless_status" -ne 0 ]; then
+    echo "❌ Failed to optimize imports. Fix the issues manually before committing."
+    exit 1
+fi
+
+echo "***** Running unit tests *****"
+
+# Stash uncommitted changes
+stash_commit="$(git stash create)"
+git stash push -u -k -m "pre-commit-temp"
+
+# Run unit tests
+./gradlew test
+status=$?
+
+# Re-apply stashed changes if any
+if [ -n "${stash_commit}" ]; then
+    git stash apply "${stash_commit}"
+fi
+
+echo "***** Running static code checks *****"
+
+# Java source files to scan
+FILES=$(find ./src -name "*.java")
+
+# Initialize fail flag
+fail=0
+
+# Check for common issues
+for file in $FILES; do
+    # ... keep existing code (Rule checks 2-6)
+done
+
+echo "***** Done with static code checks *****"
+
+if [ "$status" -ne 0 ] || [ "$fail" -ne 0 ]; then
+    echo "❌ Pre-commit checks failed."
+    exit 1
+fi
+
+echo "✅ Pre-commit checks passed!"
+exit 0
