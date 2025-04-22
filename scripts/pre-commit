@@ -40,7 +40,67 @@ if [ "$FORCE_COMMIT" -eq 0 ]; then
 
     # Check for common issues
     for file in $FILES; do
-        # ... keep existing code (Rule checks 2-6)
+        ##################################
+        # Rule 1: Unused Imports (now handled by Spotless)
+        ##################################
+        
+        ##################################
+        # Rule 2: Import Order
+        ##################################
+        imports=$(grep '^import ' "$file")
+        sorted=$(echo "$imports" | sort)
+        if [ "$imports" != "$sorted" ]; then
+            echo "⚠️  [Import Order] $file: import statements not sorted."
+            fail=1
+        fi
+
+        ##################################
+        # Rule 3: Circular Imports
+        ##################################
+        base=$(basename "$file" .java)
+        if grep -q "import.*$base" "$file"; then
+            echo "⚠️  [Circular Import] $file: imports itself."
+            fail=1
+        fi
+
+        ##################################
+        # Rule 4: Indentation - Spaces Instead of Tabs
+        ##################################
+        grep -nP "^( {2,})" "$file" | while read -r line; do
+            echo "⚠️  [Indentation] $file Line ${line%%:*}: Uses spaces instead of tabs."
+            fail=1
+        done
+
+        ##################################
+        # Rule 5: Unused Functions (with Spring Framework exceptions)
+        ##################################
+        # Skip unused function check for Spring configuration classes and exception classes
+        if ! echo "$file" | grep -qE '(Configuration|Exception)\.java$'; then
+            functions=$(grep -Po 'public\s+[^\s]+\s+\K\w+(?=\s*\()' "$file")
+            for func in $functions; do
+                # Skip checking @Bean methods, they're used by Spring
+                is_bean=$(grep -B 5 -A 1 "$func" "$file" | grep -E "@Bean|@Component|@Repository|@Service|@Controller|@RestController|@Configuration")
+                
+                # Skip getter/setter methods
+                is_getter_setter=$(echo "$func" | grep -E "^(get|set|is)[A-Z]")
+                
+                if [ -z "$is_bean" ] && [ -z "$is_getter_setter" ]; then
+                    count=$(grep -c "$func(" "$file")
+                    if [ "$count" -le 1 ]; then
+                        echo "⚠️  [Unused Function] $file: function $func may be unused."
+                        fail=1
+                    fi
+                fi
+            done
+        fi
+
+        ##################################
+        # Rule 6: Trailing Whitespace
+        ##################################
+        if grep -q '[[:blank:]]$' "$file"; then
+            echo "⚠️  [Trailing Whitespace] $file: contains trailing whitespace."
+            fail=1
+        fi
     done
 
     echo "***** Done with static code checks *****"
