@@ -22,32 +22,43 @@
 ### Clone the Repository:
 ```bash
 git clone <repository-url>
-cd ai-customer-support
 ```
 
 ### Build the Project:
 ```bash
-./gradlew :gateway-service:clean build
+./gradlew clean build
 ```
 
 ### Run the Application:
 ```bash
-./gradlew :gateway-service:bootRun
+./gradlew bootRun
 ```
 
 ## 4. Configuration
 
-### Environment Configurations:
-The application is configured via `application.yml` file. Key configurations include:
+### Environment Configurations
+The application is configured via the `application.yml` file. Key configurations include:
 
-- Server port: 8080
-- Application name: gateway-service
-- Route configurations for downstream services
-- Rate limiting settings
-- Circuit breaker configurations
-- API key validation settings
+- **Server Port**: `8080`
+- **Active Spring Profile**: `default`
+- **Application Name**: `gateway-service`
+- **Route Configurations** for downstream services:
+  - `AUTH_SERVICE_URL=http://localhost:8081`
+  - `CUSTOMER_SERVICE_URL=http://localhost:8082`
+- **Rate Limiting Settings**:
+  - `Replenish Rate`: `10`
+  - `Burst Capacity`: `20`
+  - `Requested Tokens`: `1`
+- **Circuit Breaker Configurations**
+- **API Key Validation Settings**
+- **CORS Settings**:
+  - `Allowed Origins`: `*`
+  - `Allowed Methods`: `GET, POST, PUT, DELETE, OPTIONS`
+  - `Allowed Headers`: `*`
+  - `Allow Credentials`: `true`
+  - `Max Age`: `3600` seconds
 
-### Redis Connection Settings:
+### Redis Connection Settings
 ```yaml
 spring:
   redis:
