@@ -59,7 +59,6 @@ The application is configured via the `application.yml` file. Key configurations
 - **Circuit Breaker Configurations**
 - **API Key Validation Settings**
 - **CORS Settings**:
-  - `Allowed Origins`: `*`
   - `Allowed Methods`: `GET, POST, PUT, DELETE, OPTIONS`
   - `Allowed Headers`: `*`
   - `Allow Credentials`: `true`
@@ -197,35 +196,3 @@ The Gateway Service implements centralized error handling through:
    ```
    java -Xms1G -Xmx2G -jar OptimusAPI_Gateway_service-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
    ```
-   
-## 11. API Key Authentication Flow
-
-The system uses API key-based authentication that follows this flow:
-
-1. Customer submits registration details via the Authentication Service
-2. System validates customer information and sends a verification email
-3. Customer verifies email through the verification link
-4. Upon successful verification, an API key is generated and stored in both Authentication and Customer Service databases
-5. All subsequent API requests must include this API key in the header
-6. Gateway Service validates the API key before routing requests to microservices
-
-### Customer Registration Request Format
-
-The registration endpoint accepts a comprehensive JSON payload containing:
-
-- Customer Profile (name, industry, business details)
-- Legal and Tax Compliance information
-- Banking Details
-- Administrative Contact Information
-- API Configuration preferences
-- Branding elements
-- Chatbot configuration
-- Terms agreement
-
-### API Key Header Format
-
-After obtaining an API key, all requests must include:
-
-```
-X-API-Key: {generated-api-key}
-```
