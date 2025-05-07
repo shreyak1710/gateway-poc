@@ -2,8 +2,14 @@
 
 ## 1. Project Overview
 
-**Project Name:** AI Customer Support Agents - Gateway Service  
+**Project Name:** AI Customer Support Agents (ACSA) - gateway-service
 **Description:** Spring Cloud Gateway service that routes and manages requests to microservices in the AI Customer Support Agents architecture. Provides rate limiting, circuit breaking, security via API key authentication, and fallback capabilities.
+
+The AI Customer Support Agents platform is a comprehensive microservices solution that enables businesses to deploy customized AI-powered customer support agents. The system processes detailed customer registration data, handles secure verification, and generates API keys for authenticated service access.
+
+The Gateway Service acts as the entry point for all client requests, performing critical functions such as request routing, rate limiting, circuit breaking, and security enforcement through API key validation.
+
+
 
 ## 2. Prerequisites
 
@@ -103,8 +109,9 @@ gateway-service/
 │   │       └── application.yml            
 │   └── test/                               
 ├── build.gradle                         
-├── gradlew                                 
-└── README.md                          
+├── gradlew
+├── README.md                            
+└── settings.gradle
 ```
 
 ## 6. API Documentation
