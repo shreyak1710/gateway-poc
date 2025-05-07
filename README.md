@@ -75,36 +75,36 @@ gateway-service/
 │   │   ├── java/
 │   │   │   └── com/
 │   │   │       └── zapcom/
-│   │   │           ├── configuration/        # Configuration classes
+│   │   │           ├── configuration/       
 │   │   │           │   ├── GatewayServiceConfiguration.java
 │   │   │           │   └── RateLimiterConfiguration.java
-│   │   │           ├── controller/           # Controller classes
+│   │   │           ├── controller/        
 │   │   │           │   └── FallbackController.java
-│   │   │           ├── exception/            # Exception handling
+│   │   │           ├── exception/       
 │   │   │           │   ├── GatewayServiceException.java
 │   │   │           │   └── GatewayServiceGlobalExceptionHandler.java
-│   │   │           ├── filter/               # Gateway filters
+│   │   │           ├── filter/          
 │   │   │           │   ├── GatewayServiceRequestLoggingFilter.java
 │   │   │           │   ├── GatewayServiceResponseHeadersFilter.java
 │   │   │           │   └── JwtAuthenticationFilter.java
-│   │   │           ├── model/                # Data models
+│   │   │           ├── model/       
 │   │   │           │   ├── request/
 │   │   │           │   │   └── GatewayServiceRequest.java
 │   │   │           │   └── response/
 │   │   │           │       ├── GatewayServiceErrorResponse.java
 │   │   │           │       └── GatewayServiceResponse.java
-│   │   │           ├── utils/                # Utility classes
+│   │   │           ├── utils/           
 │   │   │           │   ├── GatewayServiceJwtUtils.java
 │   │   │           │   ├── GatewayServicePathConstants.java
 │   │   │           │   ├── GatewayServiceRequestConstants.java
 │   │   │           │   └── GatewayServiceResponseConstants.java
 │   │   │           └── GatewayServiceApplication.java
 │   │   └── resources/
-│   │       └── application.yml               # Application configuration
-│   └── test/                                 # Test classes
-├── build.gradle                              # Gradle build file
-├── gradlew                                   # Gradle wrapper script
-└── README.md                                 # This file
+│   │       └── application.yml            
+│   └── test/                               
+├── build.gradle                         
+├── gradlew                                 
+└── README.md                          
 ```
 
 ## 6. API Documentation
@@ -152,7 +152,7 @@ The Gateway Service implements centralized error handling through:
 
 ### Run Tests:
 ```bash
-./gradlew :gateway-service:test
+./gradlew test
 ```
 
 ### Test Categories:
@@ -165,13 +165,13 @@ The Gateway Service implements centralized error handling through:
 1. Ensure Redis is running locally
 2. Run with development profile:
    ```
-   ./gradlew :gateway-service:bootRun --args='--spring.profiles.active=dev'
+   ./gradlew bootRun --args='--spring.profiles.active=dev'
    ```
 
 ### QA Environment
 1. Build the application:
    ```
-   ./gradlew :gateway-service:build
+   ./gradlew build
    ```
 2. Deploy the JAR file to the QA server
 3. Run with QA profile:
@@ -182,72 +182,14 @@ The Gateway Service implements centralized error handling through:
 ### Production Environment
 1. Build the application:
    ```
-   ./gradlew :gateway-service:build
+   ./gradlew build
    ```
 2. Deploy the JAR file to production servers
 3. Run with production profile and appropriate memory settings:
    ```
    java -Xms1G -Xmx2G -jar gateway-service.jar --spring.profiles.active=prod
    ```
-
-### Docker Setup
-
-1. Create a Dockerfile in the gateway-service directory:
-   ```dockerfile
-   FROM openjdk:21-slim
-   VOLUME /tmp
-   ARG JAR_FILE=build/libs/*.jar
-   COPY ${JAR_FILE} app.jar
-   ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/app.jar"]
-   ```
-
-2. Build the Docker image:
-   ```bash
-   docker build -t ai-customer-support/gateway-service .
-   ```
-
-3. Run the container:
-   ```bash
-   docker run -d -p 8080:8080 --name gateway-service \
-     --network ai-support-network \
-     -e "SPRING_REDIS_HOST=redis" \
-     ai-customer-support/gateway-service
-   ```
-
-4. Docker Compose (optional):
-   Create a docker-compose.yml file for orchestrating all services:
-   ```yaml
-   version: '3'
    
-   services:
-     redis:
-       image: redis:latest
-       ports:
-         - "6379:6379"
-       networks:
-         - ai-support-network
-       
-     gateway-service:
-       build: ./gateway-service
-       ports:
-         - "8080:8080"
-       depends_on:
-         - redis
-       environment:
-         - SPRING_REDIS_HOST=redis
-       networks:
-         - ai-support-network
-   
-   networks:
-     ai-support-network:
-       driver: bridge
-   ```
-
-   Run with:
-   ```bash
-   docker-compose up -d
-   ```
-
 ## 11. API Key Authentication Flow
 
 The system uses API key-based authentication that follows this flow:
