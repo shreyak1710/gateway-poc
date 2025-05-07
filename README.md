@@ -183,7 +183,7 @@ The Gateway Service implements centralized error handling through:
 2. Deploy the JAR file to the QA server
 3. Run with QA profile:
    ```
-   java -jar gateway-service.jar --spring.profiles.active=qa
+   java -jar OptimusAPI_Gateway_service-0.0.1-SNAPSHOT.jar --spring.profiles.active=qa
    ```
 
 ### Production Environment
@@ -194,7 +194,7 @@ The Gateway Service implements centralized error handling through:
 2. Deploy the JAR file to production servers
 3. Run with production profile and appropriate memory settings:
    ```
-   java -Xms1G -Xmx2G -jar gateway-service.jar --spring.profiles.active=prod
+   java -Xms1G -Xmx2G -jar OptimusAPI_Gateway_service-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
    ```
    
 ## 11. API Key Authentication Flow
